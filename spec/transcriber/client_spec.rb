@@ -42,4 +42,15 @@ describe Transcriber::Client do
     expect(response['data']['attributes']['audio_file_url'])
       .to eq('/this-is-my-audio-file-url')
   end
+
+  it 'fails to add media for transcript requests' do
+    client = Transcriber::Client.new
+    response = client.add_media(
+      1,
+      audio_file_url: ''
+    )
+    expect(response['errors']['status'])
+    expect(response['errors']['detail'])
+      .to eq("audio_file_url - can't be blank")
+  end
 end
