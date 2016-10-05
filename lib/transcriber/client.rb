@@ -36,18 +36,31 @@ module Transcriber
     end
 
     # method that gets transcript requests
-    def find(id:)
+    def find(id)
+      HTTParty.get(
+        api_url_for(endpoint: '/transcript_requests/' + id.to_s),
+      )
     end
 
     # method that cancels transcript requests
-    def cancel(id:)
+    def cancel(id)
+      HTTParty.patch(
+        api_url_for(endpoint: '/transcript_requests/' + id.to_s + '/cancel'),
+      )
     end
 
     # method that adds media for transcript requests
-    def add_media(
-      id:,
-      audio_file_url:
-    )
+    def add_media(id, audio_file_url:)
+      HTTParty.patch(
+        api_url_for(endpoint: '/transcript_requests/' + id.to_s + '/media'),
+        query: {
+          data: {
+            attributes: {
+              audio_file_url: audio_file_url,
+            }
+          }
+        }
+      )
     end
 
     # method that updates transcript requests
