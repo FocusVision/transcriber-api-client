@@ -65,16 +65,33 @@ module Transcriber
 
     # method that updates transcript requests
     def update(
-      id:,
-      audio_file_url:,
-      expected_media_date:,
-      high_accuracy:,
-      multiple_speakers:,
-      notification:,
-      notification_url:,
-      notification_email:,
-      turnaround_time:
+      id,
+      audio_file_url: nil,
+      expected_media_date: nil,
+      high_accuracy: nil,
+      multiple_speakers: nil,
+      notification: nil,
+      notification_url: nil,
+      notification_email: nil,
+      turnaround_time: nil
     )
+      HTTParty.patch(
+        api_url_for(endpoint: '/transcript_requests/' + id.to_s),
+        query: {
+          data: {
+            attributes: {
+              audio_file_url: audio_file_url,
+              expected_media_date: expected_media_date,
+              high_accuracy: high_accuracy,
+              multiple_speakers: multiple_speakers,
+              notification: notification,
+              notification_url: notification_url,
+              notification_email: notification_email,
+              turnaround_time: turnaround_time
+            }.reject{ |_, v| v.nil? }
+          }
+        }
+      )
     end
 
     # methods that normalize response data from API
