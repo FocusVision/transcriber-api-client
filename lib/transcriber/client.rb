@@ -16,7 +16,7 @@ module Transcriber
       turnaround_time: 'normal'
     )
 
-      HTTParty.post(
+      response = HTTParty.post(
         api_url_for(endpoint: '/transcript_requests'),
         body: {
           data: {
@@ -33,25 +33,31 @@ module Transcriber
           }
         }
       )
+
+      Transcriber::Response.new(response)
     end
 
     # method that gets transcript requests
     def find(id)
-      HTTParty.get(
+      response = HTTParty.get(
         api_url_for(endpoint: '/transcript_requests/' + id.to_s),
       )
+
+      Transcriber::Response.new(response)
     end
 
     # method that cancels transcript requests
     def cancel(id)
-      HTTParty.patch(
+      response = HTTParty.patch(
         api_url_for(endpoint: '/transcript_requests/' + id.to_s + '/cancel'),
       )
+
+      Transcriber::Response.new(response)
     end
 
     # method that adds media for transcript requests
     def add_media(id, audio_file_url:)
-      HTTParty.patch(
+      response = HTTParty.patch(
         api_url_for(endpoint: '/transcript_requests/' + id.to_s + '/media'),
         query: {
           data: {
@@ -61,6 +67,8 @@ module Transcriber
           }
         }
       )
+
+      Transcriber::Response.new(response)
     end
 
     # method that updates transcript requests
@@ -75,7 +83,7 @@ module Transcriber
       notification_email: nil,
       turnaround_time: nil
     )
-      HTTParty.patch(
+      response = HTTParty.patch(
         api_url_for(endpoint: '/transcript_requests/' + id.to_s),
         query: {
           data: {
@@ -92,6 +100,8 @@ module Transcriber
           }
         }
       )
+
+      Transcriber::Response.new(response)
     end
 
     # methods that normalize response data from API

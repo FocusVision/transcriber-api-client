@@ -13,22 +13,22 @@ describe Transcriber::Client do
       notification_url: '/call_me_back'
     )
 
-    expect(response['data']['attributes']['notification_url'])
+    expect(response.attributes['notification_url'])
       .to eq('/call_me_back')
   end
 
   it 'gets transcript requests' do
     response = @client.find(1)
 
-    expect(response['data']['id'])
-      .to eq('1')
+    expect(response).to be_successful
+    expect(response.id).to eq(1)
   end
 
   it 'cancels transcript requests' do
     response = @client.cancel(1)
 
-    expect(response['data']['id'])
-      .to eq('1')
+    expect(response).to be_successful
+    expect(response.id).to eq(1)
   end
 
   it 'adds media for transcript requests' do
@@ -36,7 +36,9 @@ describe Transcriber::Client do
       1,
       audio_file_url: '/this-is-my-audio-file-url'
     )
-    expect(response['data']['attributes']['audio_file_url'])
+
+    expect(response).to be_successful
+    expect(response.attributes['audio_file_url'])
       .to eq('/this-is-my-audio-file-url')
   end
 
@@ -45,9 +47,9 @@ describe Transcriber::Client do
       1,
       audio_file_url: ''
     )
-    expect(response['errors']['status'])
-      .to eq(422)
-    expect(response['errors']['detail'])
+    expect(response.error_code).to eq(422)
+    expect(response).not_to be_successful
+    expect(response.error)
       .to eq("audio_file_url - can't be blank")
   end
 
@@ -57,7 +59,15 @@ describe Transcriber::Client do
       notification: 'email',
       notification_email: 'user@example.com'
     )
-    expect(response['data']['attributes']['notification'])
-      .to eq('email')
+
+    expect(response).to be_successful
+    expect(response.attributes['notification']).to eq('email')
+  end
+
+  it 'updates transcript requests' do
+    response = @client.update(1)
+
+    expect(response).to be_successful
+    expect(response.data['attributes']).to eq([])
   end
 end
