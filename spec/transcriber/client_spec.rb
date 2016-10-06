@@ -24,6 +24,14 @@ describe Transcriber::Client do
     expect(response.id).to eq(1)
   end
 
+  it 'handles 404 for resources' do
+    response = @client.find(0)
+
+    expect(response).not_to be_successful
+    expect(response.error)
+      .to eq('Cannot be found')
+  end
+
   it 'cancels transcript requests' do
     response = @client.cancel(1)
 
@@ -54,20 +62,14 @@ describe Transcriber::Client do
   end
 
   it 'updates transcript requests' do
+    one_week_from_today = (Time.now + (60 * 60 * 24 * 7)).iso8601
     response = @client.update(
       1,
-      notification: 'email',
-      notification_email: 'user@example.com'
+      expected_media_date: one_week_from_today
     )
 
     expect(response).to be_successful
-    expect(response.attributes['notification']).to eq('email')
-  end
-
-  it 'updates transcript requests' do
-    response = @client.update(1)
-
-    expect(response).to be_successful
-    expect(response.data['attributes']).to eq([])
+    expect(response.attributes['expected_media_date'])
+      .to eq(one_week_from_today)
   end
 end
