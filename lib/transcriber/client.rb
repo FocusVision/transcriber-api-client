@@ -100,6 +100,7 @@ module Transcriber
           type: RESOURCE_TYPE,
           attributes: attributes
         }
+      }.to_json
     end
 
     def wrap_response(&block)
