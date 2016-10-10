@@ -1,10 +1,14 @@
 require 'spec_helper'
 require 'impostor'
 describe Transcriber::Client do
+  TEST_KEY = '9566b75b-d9fa96fd-601f2df-0ef05ab63'.freeze
 
   before :each do
     Impostor.stub(:transcription)
     @client = Transcriber::Client.new
+    Transcriber.configure do |config|
+      config.api_key = TEST_KEY
+    end
   end
 
   it 'creates transcript requests via the API' do
@@ -21,7 +25,20 @@ describe Transcriber::Client do
     response = @client.find(1)
 
     expect(response).to be_successful
+    expect(response).to be_instance_of(Transcriber::Response)
     expect(response.id).to eq(1)
+  end
+
+  it 'set Authorization headers correctly' do
+    stubbed_request =
+      stub_request(:get, /https:\/\/www.24tru.com\/r\/api\/transcript_requests/)
+        .with(headers: {
+          'Accept' => Transcriber::Client::MIME_TYPE,
+          'Authorization' => "Bearer #{TEST_KEY}"
+        })
+    @client.find(1)
+
+    expect(stubbed_request).to have_been_requested
   end
 
   it 'handles 404 for resources' do

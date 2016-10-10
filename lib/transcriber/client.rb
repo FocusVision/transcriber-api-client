@@ -3,10 +3,6 @@ module Transcriber
     MIME_TYPE = 'application/vnd.api+json'.freeze
     RESOURCE_TYPE = 'transcript_requests'.freeze
 
-    # TBD auth & more
-    def initialize
-    end
-
     # method that creates transcript requests via the API
     def create(
       audio_file_url: '1',
@@ -33,7 +29,8 @@ module Transcriber
               notification_email: notification_email,
               turnaround_time: turnaround_time
             }
-          )
+          ),
+          headers: post_headers
         )
       end
     end
@@ -63,7 +60,7 @@ module Transcriber
       wrap_response do
         HTTParty.patch(
           api_url_for('/transcript_requests/' + id.to_s + '/media'),
-          query: serialize_resource(audio_file_url: audio_file_url),
+          body: serialize_resource(audio_file_url: audio_file_url),
           headers: post_headers
         )
       end
@@ -74,7 +71,7 @@ module Transcriber
       wrap_response do
         HTTParty.patch(
           api_url_for('/transcript_requests/' + id.to_s),
-          query: serialize_resource(expected_media_date: expected_media_date),
+          body: serialize_resource(expected_media_date: expected_media_date),
           headers: post_headers
         )
       end
@@ -103,7 +100,6 @@ module Transcriber
           type: RESOURCE_TYPE,
           attributes: attributes
         }
-      }
     end
 
     def wrap_response(&block)

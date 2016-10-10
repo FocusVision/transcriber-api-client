@@ -2,6 +2,7 @@ module Transcriber
   class Response
     def initialize(raw_response)
       @raw_response = raw_response
+      # raise HTTParty::ResponseError.new() unless raw_response.success?
     end
 
     def id
@@ -30,10 +31,10 @@ module Transcriber
 
     private
 
-      attr_reader :raw_response
+    attr_reader :raw_response
 
-      def json
-        @json ||= JSON.parse(raw_response.body)
-      end
+    def json
+      @json ||= JSON.parse(raw_response.body)
+    end
   end
 end
