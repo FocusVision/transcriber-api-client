@@ -1,5 +1,8 @@
 module Transcriber
   class Client
+    MIME_TYPE = 'application/vnd.api+json'.freeze
+    RESOURCE_TYPE = 'transcript_requests'.freeze
+
     # TBD auth & more
     def initialize
     end
@@ -19,20 +22,18 @@ module Transcriber
       wrap_response do
         HTTParty.post(
           api_url_for('/transcript_requests'),
-          body: {
-            data: {
-              attributes: {
-                audio_file_url: audio_file_url,
-                expected_media_date: expected_media_date,
-                high_accuracy: high_accuracy,
-                multiple_speakers: multiple_speakers,
-                notification: notification,
-                notification_url: notification_url,
-                notification_email: notification_email,
-                turnaround_time: turnaround_time
-              }
+          body: serialize_resource(
+            {
+              audio_file_url: audio_file_url,
+              expected_media_date: expected_media_date,
+              high_accuracy: high_accuracy,
+              multiple_speakers: multiple_speakers,
+              notification: notification,
+              notification_url: notification_url,
+              notification_email: notification_email,
+              turnaround_time: turnaround_time
             }
-          }
+          )
         )
       end
     end
@@ -42,6 +43,7 @@ module Transcriber
       wrap_response do
         HTTParty.get(
           api_url_for('/transcript_requests/' + id.to_s),
+          headers: get_headers
         )
       end
     end
@@ -51,7 +53,8 @@ module Transcriber
       wrap_response do
         HTTParty.patch(
           api_url_for('/transcript_requests/' + id.to_s + '/cancel'),
-          )
+          headers: post_headers
+        )
       end
     end
 
@@ -60,44 +63,51 @@ module Transcriber
       wrap_response do
         HTTParty.patch(
           api_url_for('/transcript_requests/' + id.to_s + '/media'),
-          query: {
-            data: {
-              attributes: {
-                audio_file_url: audio_file_url,
-              }
-            }
-          }
+          query: serialize_resource(audio_file_url: audio_file_url),
+          headers: post_headers
         )
       end
     end
 
     # method that updates transcript requests
-    def update(
-      id,
-      expected_media_date: nil
-    )
+    def update(id, expected_media_date: nil)
       wrap_response do
         HTTParty.patch(
           api_url_for('/transcript_requests/' + id.to_s),
-          query: {
-            data: {
-              attributes: {
-                expected_media_date: expected_media_date
-              }
-            }
-          }
+          query: serialize_resource(expected_media_date: expected_media_date),
+          headers: post_headers
         )
       end
     end
 
     private
 
-    def wrap_response(&block)
-      Transcriber::Response.new(yield)
+    def api_url_for(endpoint)
+      Transcriber.configuration.__base_uri__ + endpoint
     end
 
-    def api_url_for(endpoint)
-      Transcriber::BASE_URL + endpoint
+    def get_headers
+      {
+        'Accept' => MIME_TYPE,
+        'Authorization' => "Bearer #{Transcriber.configuration.api_key}"
+      }
+    end
+
+    def post_headers
+      get_headers.merge('Content-Type' => MIME_TYPE)
+    end
+
+    def serialize_resource(attributes = {})
+      {
+        data: {
+          type: RESOURCE_TYPE,
+          attributes: attributes
+        }
+      }
+    end
+
+    def wrap_response(&block)
+      Transcriber::Response.new(yield)
     end
   end
 end

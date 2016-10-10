@@ -7,5 +7,13 @@ require 'transcriber/client'
 require 'transcriber/version'
 
 module Transcriber
-  BASE_URL = 'https://www.24tru.com/r/api'.freeze
+  BASE_URI = 'https://www.24tru.com/r/api'.freeze
+
+  def self.configuration
+    @configuration ||= Configuration.new
+  end
+
+  def self.configure(&block)
+    yield configuration
+  end
 end
