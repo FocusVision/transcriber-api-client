@@ -28,7 +28,7 @@ describe Transcriber::Client do
     response = @client.find(0)
 
     expect(response).not_to be_successful
-    expect(response.error)
+    expect(response.error.info)
       .to eq('Cannot be found')
   end
 
@@ -55,9 +55,9 @@ describe Transcriber::Client do
       1,
       audio_file_url: ''
     )
-    expect(response.error_code).to eq(422)
+    expect(response.error.code).to eq(422)
     expect(response).not_to be_successful
-    expect(response.error)
+    expect(response.error.info)
       .to eq("audio_file_url - can't be blank")
   end
 

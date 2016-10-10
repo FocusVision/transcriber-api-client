@@ -1,5 +1,7 @@
 
 require 'httparty'
+require 'transcriber/error'
+require 'transcriber/configuration'
 require 'transcriber/response'
 require 'transcriber/client'
 require 'transcriber/version'

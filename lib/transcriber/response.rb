@@ -9,7 +9,7 @@ module Transcriber
     end
 
     def successful?
-      error_code.zero?
+      errors.nil?
     end
 
     def attributes
@@ -17,15 +17,23 @@ module Transcriber
     end
 
     def error
-      successful? ? nil : @raw_response['errors']['detail']
-    end
-
-    def error_code
-      @raw_response['errors'] ? @raw_response['errors']['status'].to_i : 0
+      successful? ? nil : Transcriber::Error.new(json['errors'])
     end
 
     def data
-      @raw_response['data']
+      json['data']
     end
+
+    def errors
+      json['errors']
+    end
+
+    private
+
+      attr_reader :raw_response
+
+      def json
+        @json ||= JSON.parse(raw_response.body)
+      end
   end
 end
