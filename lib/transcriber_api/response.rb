@@ -2,7 +2,6 @@ module TranscriberApi
   class Response
     def initialize(raw_response)
       @raw_response = raw_response
-      # raise HTTParty::ResponseError.new() unless raw_response.success?
     end
 
     def id

@@ -13,8 +13,13 @@ describe TranscriberApi::Client do
 
   it 'creates transcript requests via the API' do
     response = @client.create(
+      audio_file_url: nil,
+      expected_media_date: (Time.now + (60 * 60 * 24 * 1)).iso8601,
+      high_accuracy: true,
+      multiple_speakers: true,
       notification: 'webhook',
-      notification_url: '/call_me_back'
+      notification_url: '/call_me_back',
+      turnaround_time: 'normal'
     )
 
     expect(response.attributes['notification_url'])

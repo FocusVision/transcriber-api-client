@@ -5,14 +5,14 @@ module TranscriberApi
 
     # method that creates transcript requests via the API
     def create(
-      audio_file_url: '1',
-      expected_media_date: Time.now.iso8601,
-      high_accuracy: false,
-      multiple_speakers: true,
-      notification: 'webhook',
-      notification_url: '/callback',
+      audio_file_url:,
+      expected_media_date:,
+      high_accuracy:,
+      multiple_speakers:,
+      notification:,
+      notification_url: '',
       notification_email: '',
-      turnaround_time: 'normal'
+      turnaround_time:
     )
 
       wrap_response do
@@ -39,7 +39,7 @@ module TranscriberApi
     def find(id)
       wrap_response do
         HTTParty.get(
-          api_url_for('/transcript_requests/' + id.to_s),
+          api_url_for("/transcript_requests/#{id}"),
           headers: get_headers
         )
       end
@@ -49,7 +49,7 @@ module TranscriberApi
     def cancel(id)
       wrap_response do
         HTTParty.patch(
-          api_url_for('/transcript_requests/' + id.to_s + '/cancel'),
+          api_url_for("/transcript_requests/#{id}/cancel"),
           headers: post_headers
         )
       end
@@ -59,7 +59,7 @@ module TranscriberApi
     def add_media(id, audio_file_url:)
       wrap_response do
         HTTParty.patch(
-          api_url_for('/transcript_requests/' + id.to_s + '/media'),
+          api_url_for("/transcript_requests/#{id}/media"),
           body: serialize_resource(audio_file_url: audio_file_url),
           headers: post_headers
         )
@@ -70,7 +70,7 @@ module TranscriberApi
     def update(id, expected_media_date: nil)
       wrap_response do
         HTTParty.patch(
-          api_url_for('/transcript_requests/' + id.to_s),
+          api_url_for("/transcript_requests/#{id}"),
           body: serialize_resource(expected_media_date: expected_media_date),
           headers: post_headers
         )
