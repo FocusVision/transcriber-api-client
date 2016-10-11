@@ -1,4 +1,4 @@
-module Transcriber
+module TranscriberApi
   class Error
     def initialize(raw_error)
       @raw_error = raw_error

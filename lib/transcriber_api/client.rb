@@ -1,4 +1,4 @@
-module Transcriber
+module TranscriberApi
   class Client
     MIME_TYPE = 'application/vnd.api+json'.freeze
     RESOURCE_TYPE = 'transcript_requests'.freeze
@@ -80,13 +80,13 @@ module Transcriber
     private
 
     def api_url_for(endpoint)
-      Transcriber.configuration.__base_uri__ + endpoint
+      TranscriberApi.configuration.__base_uri__ + endpoint
     end
 
     def get_headers
       {
         'Accept' => MIME_TYPE,
-        'Authorization' => "Bearer #{Transcriber.configuration.api_key}"
+        'Authorization' => "Bearer #{TranscriberApi.configuration.api_key}"
       }
     end
 
@@ -104,7 +104,7 @@ module Transcriber
     end
 
     def wrap_response(&block)
-      Transcriber::Response.new(yield)
+      TranscriberApi::Response.new(yield)
     end
   end
 end

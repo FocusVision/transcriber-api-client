@@ -1,4 +1,4 @@
-module Transcriber
+module TranscriberApi
   class Configuration
     attr_accessor :api_key
     attr_writer :__base_uri__

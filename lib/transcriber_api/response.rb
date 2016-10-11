@@ -1,4 +1,4 @@
-module Transcriber
+module TranscriberApi
   class Response
     def initialize(raw_response)
       @raw_response = raw_response
@@ -18,7 +18,7 @@ module Transcriber
     end
 
     def error
-      successful? ? nil : Transcriber::Error.new(json['errors'])
+      successful? ? nil : TranscriberApi::Error.new(json['errors'])
     end
 
     def data

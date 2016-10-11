@@ -1,12 +1,11 @@
-
 require 'httparty'
-require 'transcriber/error'
-require 'transcriber/configuration'
-require 'transcriber/response'
-require 'transcriber/client'
-require 'transcriber/version'
+require 'transcriber_api/error'
+require 'transcriber_api/configuration'
+require 'transcriber_api/response'
+require 'transcriber_api/client'
+require 'transcriber_api/version'
 
-module Transcriber
+module TranscriberApi
   BASE_URI = 'https://www.24tru.com/r/api'.freeze
 
   def self.configuration
