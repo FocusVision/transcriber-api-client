@@ -15,7 +15,7 @@ module TranscriberApi
       turnaround_time:
     )
 
-      wrap_response do
+      handle_errors do
         HTTParty.post(
           api_url_for('/transcript_requests'),
           body: serialize_resource(
@@ -37,7 +37,7 @@ module TranscriberApi
 
     # method that gets transcript requests
     def find(id)
-      wrap_response do
+      handle_errors do
         HTTParty.get(
           api_url_for("/transcript_requests/#{id}"),
           headers: get_headers
@@ -47,7 +47,7 @@ module TranscriberApi
 
     # method that cancels transcript requests
     def cancel(id)
-      wrap_response do
+      handle_errors do
         HTTParty.patch(
           api_url_for("/transcript_requests/#{id}/cancel"),
           headers: post_headers
@@ -57,7 +57,7 @@ module TranscriberApi
 
     # method that adds media for transcript requests
     def add_media(id, audio_file_url:)
-      wrap_response do
+      handle_errors do
         HTTParty.patch(
           api_url_for("/transcript_requests/#{id}/media"),
           body: serialize_resource(audio_file_url: audio_file_url),
@@ -68,7 +68,7 @@ module TranscriberApi
 
     # method that updates transcript requests
     def update(id, expected_media_date: nil)
-      wrap_response do
+      handle_errors do
         HTTParty.patch(
           api_url_for("/transcript_requests/#{id}"),
           body: serialize_resource(expected_media_date: expected_media_date),
@@ -103,8 +103,14 @@ module TranscriberApi
       }.to_json
     end
 
-    def wrap_response(&block)
-      TranscriberApi::Response.new(yield)
+    def handle_errors(&block)
+      Response.new(yield).tap { |response| verify_response(response) }
+    rescue Timeout::Error
+      raise TimeoutError
+    end
+
+    def verify_response(response)
+      raise response.errors[0] unless response.successful?
     end
   end
 end

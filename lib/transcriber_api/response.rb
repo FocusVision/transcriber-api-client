@@ -4,28 +4,24 @@ module TranscriberApi
       @raw_response = raw_response
     end
 
-    def id
-      data['id'].to_i
-    end
-
     def successful?
-      errors.nil?
-    end
-
-    def attributes
-      data ? data['attributes'] : []
-    end
-
-    def error
-      successful? ? nil : TranscriberApi::Error.new(json['errors'])
+      raw_response.success?
     end
 
     def data
       json['data']
     end
 
+    def id
+      data['id'].to_i
+    end
+
+    def attributes
+      data ? data['attributes'] : []
+    end
+
     def errors
-      json['errors']
+      Array(json['errors']).map { |error| Error.from_raw(error) }
     end
 
     private

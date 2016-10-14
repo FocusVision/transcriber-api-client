@@ -1,17 +1,15 @@
 require 'spec_helper'
 require 'impostor'
-describe TranscriberApi::Client do
-
+describe TranscriberApi::TranscriptRequest do
   before :each do
     Impostor.stub(:transcription)
-    @client = TranscriberApi::Client.new
     TranscriberApi.configure do |config|
       config.api_key = TEST_KEY
     end
   end
 
   it 'creates transcript requests via the API' do
-    response = @client.create(
+    response = TranscriberApi::TranscriptRequest.create(
       audio_file_url: nil,
       expected_media_date: (Time.now + (60 * 60 * 24 * 1)).iso8601,
       high_accuracy: true,
@@ -21,15 +19,14 @@ describe TranscriberApi::Client do
       turnaround_time: 'normal'
     )
 
-    expect(response.attributes['notification_url'])
+    expect(response.notification_url)
       .to eq('/call_me_back')
   end
 
   it 'gets transcript requests' do
-    response = @client.find(1)
+    response = TranscriberApi::TranscriptRequest.find(1)
 
-    expect(response).to be_successful
-    expect(response).to be_instance_of(TranscriberApi::Response)
+    expect(response).to be_instance_of(TranscriberApi::TranscriptRequest)
     expect(response.id).to eq(1)
   end
 
@@ -40,53 +37,60 @@ describe TranscriberApi::Client do
           'Accept' => TranscriberApi::Client::MIME_TYPE,
           'Authorization' => "Bearer #{TEST_KEY}"
         })
-    @client.find(1)
+        .to_return(
+          body: {
+            data: {
+              id: '1',
+              type: 'transcript_requests',
+              links: {
+                self: 'https://www.24tru.com/r/api/transcript_requests/1'
+              },
+              attributes: {
+                expected_media_date: '2016-10-20T16:52:47-07:00'
+              }
+            }
+          }.to_json
+        )
+    TranscriberApi::TranscriptRequest.find(1)
 
     expect(stubbed_request).to have_been_requested
   end
-
   it 'handles 404 for resources' do
     expect {
-      @client.find(0)
+      TranscriberApi::TranscriptRequest.find(0)
     }.to raise_error(TranscriberApi::RecordNotFoundError)
   end
 
   it 'cancels transcript requests' do
-    response = @client.cancel(1)
+    response = TranscriberApi::TranscriptRequest.cancel(1)
 
-    expect(response).to be_successful
     expect(response.id).to eq(1)
   end
 
   it 'adds media for transcript requests' do
-    response = @client.add_media(
+    response = TranscriberApi::TranscriptRequest.add_media(
       1,
-      audio_file_url: '/this-is-my-audio-file-url'
+      '/this-is-my-audio-file-url'
     )
 
-    expect(response).to be_successful
-    expect(response.attributes['audio_file_url'])
+    expect(response.audio_file_url)
       .to eq('/this-is-my-audio-file-url')
   end
 
   it 'fails to add media if audio_file_url is missing' do
     expect {
-      @client.add_media(1, audio_file_url: '')
+      TranscriberApi::TranscriptRequest.add_media(1, '')
     }.to raise_error(TranscriberApi::ParamMissingError)
   end
 
   it 'updates transcript requests' do
     one_week_from_today = (Time.now + (60 * 60 * 24 * 7)).iso8601
-    response = @client.update(
+    response = TranscriberApi::TranscriptRequest.update(
       1,
-      expected_media_date: one_week_from_today
+      one_week_from_today
     )
 
-    expect(response).to be_successful
-    expect(response.attributes['expected_media_date'])
+    expect(response.expected_media_date)
       .to eq(one_week_from_today)
-  end
-
-  context 'error handling' do
   end
 end
