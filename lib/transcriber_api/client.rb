@@ -3,7 +3,6 @@ module TranscriberApi
     MIME_TYPE = 'application/vnd.api+json'.freeze
     RESOURCE_TYPE = 'transcript_requests'.freeze
 
-    # method that creates transcript requests via the API
     def create(
       audio_file_url:,
       expected_media_date:,
@@ -35,7 +34,6 @@ module TranscriberApi
       end
     end
 
-    # method that gets transcript requests
     def find(id)
       handle_errors do
         HTTParty.get(
@@ -45,7 +43,6 @@ module TranscriberApi
       end
     end
 
-    # method that cancels transcript requests
     def cancel(id)
       handle_errors do
         HTTParty.patch(
@@ -55,7 +52,6 @@ module TranscriberApi
       end
     end
 
-    # method that adds media for transcript requests
     def add_media(id, audio_file_url:)
       handle_errors do
         HTTParty.patch(
@@ -66,7 +62,6 @@ module TranscriberApi
       end
     end
 
-    # method that updates transcript requests
     def update(id, expected_media_date: nil)
       handle_errors do
         HTTParty.patch(

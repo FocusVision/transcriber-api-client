@@ -1,10 +1,9 @@
 require 'spec_helper'
-require 'impostor'
-describe TranscriberApi::TranscriptRequest do
+
+RSpec.describe TranscriberApi::TranscriptRequest do
   before :each do
-    Impostor.stub(:transcription)
     TranscriberApi.configure do |config|
-      config.api_key = TEST_KEY
+      config.api_key = '9566b75b-d9fa96fd-601f2df-0ef05ab63'
     end
   end
 
@@ -19,8 +18,7 @@ describe TranscriberApi::TranscriptRequest do
       turnaround_time: 'normal'
     )
 
-    expect(response.notification_url)
-      .to eq('/call_me_back')
+    expect(response.notification_url).to eq('/call_me_back')
   end
 
   it 'gets transcript requests' do
@@ -30,35 +28,10 @@ describe TranscriberApi::TranscriptRequest do
     expect(response.id).to eq(1)
   end
 
-  it 'set Authorization headers correctly' do
-    stubbed_request =
-      stub_request(:get, /https:\/\/www.24tru.com\/r\/api\/transcript_requests/)
-        .with(headers: {
-          'Accept' => TranscriberApi::Client::MIME_TYPE,
-          'Authorization' => "Bearer #{TEST_KEY}"
-        })
-        .to_return(
-          body: {
-            data: {
-              id: '1',
-              type: 'transcript_requests',
-              links: {
-                self: 'https://www.24tru.com/r/api/transcript_requests/1'
-              },
-              attributes: {
-                expected_media_date: '2016-10-20T16:52:47-07:00'
-              }
-            }
-          }.to_json
-        )
-    TranscriberApi::TranscriptRequest.find(1)
-
-    expect(stubbed_request).to have_been_requested
-  end
   it 'handles 404 for resources' do
-    expect {
-      TranscriberApi::TranscriptRequest.find(0)
-    }.to raise_error(TranscriberApi::RecordNotFoundError)
+    expect { TranscriberApi::TranscriptRequest.find(0) }.to(
+      raise_error(TranscriberApi::RecordNotFoundError)
+    )
   end
 
   it 'cancels transcript requests' do
@@ -73,8 +46,7 @@ describe TranscriberApi::TranscriptRequest do
       '/this-is-my-audio-file-url'
     )
 
-    expect(response.audio_file_url)
-      .to eq('/this-is-my-audio-file-url')
+    expect(response.audio_file_url).to eq('/this-is-my-audio-file-url')
   end
 
   it 'fails to add media if audio_file_url is missing' do
@@ -90,7 +62,6 @@ describe TranscriberApi::TranscriptRequest do
       one_week_from_today
     )
 
-    expect(response.expected_media_date)
-      .to eq(one_week_from_today)
+    expect(response.expected_media_date).to eq(one_week_from_today)
   end
 end
