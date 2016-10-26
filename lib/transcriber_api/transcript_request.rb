@@ -5,6 +5,7 @@ module TranscriberAPI
     def initialize(raw_response)
       @id = raw_response['id'].to_i
       @attributes = raw_response['attributes']
+      @meta = raw_response['meta'] || {}
     end
 
     def self.create(opts = {})
@@ -36,6 +37,26 @@ module TranscriberAPI
         expected_media_date: expected_media_date
       )
       new(response.data)
+    end
+
+    def new?
+      status.eql?(TranscriberAPI::Status::NEW)
+    end
+
+    def processing?
+      status.eql?(TranscriberAPI::Status::PROCESSING)
+    end
+
+    def completed?
+      status.eql?(TranscriberAPI::Status::COMPLETE)
+    end
+
+    def error?
+      status.eql?(TranscriberAPI::Status::ERROR)
+    end
+
+    def error
+      @meta['error']
     end
 
     private

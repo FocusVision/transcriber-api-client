@@ -28,6 +28,24 @@ RSpec.describe TranscriberAPI::TranscriptRequest do
     expect(response.id).to eq(1)
   end
 
+  it 'fetches a transcript' do
+    response = TranscriberAPI::TranscriptRequest.find(99)
+
+    expect(response).to be_instance_of(TranscriberAPI::TranscriptRequest)
+    expect(response.status).to eq(TranscriberAPI::Status::COMPLETE)
+    expect(response.transcript).to eq('This is the transcript of your video')
+    expect(response.id).to eq(99)
+  end
+
+  it 'handles a failed transcript' do
+    response = TranscriberAPI::TranscriptRequest.find(3)
+
+    expect(response).to be_instance_of(TranscriberAPI::TranscriptRequest)
+    expect(response.status).to eq(TranscriberAPI::Status::ERROR)
+    expect(response.error).to eq('Unable to generate transcript')
+    expect(response.id).to eq(3)
+  end
+
   it 'handles 404 for resources' do
     expect { TranscriberAPI::TranscriptRequest.find(0) }.to(
       raise_error(TranscriberAPI::RecordNotFoundError)
