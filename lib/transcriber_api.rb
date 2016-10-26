@@ -1,4 +1,5 @@
 require 'httparty'
+require 'transcriber_api/constants'
 require 'transcriber_api/exceptions'
 require 'transcriber_api/configuration'
 require 'transcriber_api/response'
