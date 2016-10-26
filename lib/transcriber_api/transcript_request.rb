@@ -1,4 +1,4 @@
-module TranscriberApi
+module TranscriberAPI
   class TranscriptRequest
     attr_reader :id
 

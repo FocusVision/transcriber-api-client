@@ -1,4 +1,4 @@
-module TranscriberApi
+module TranscriberAPI
   ERRORS = {
     100 => 'ValidationError',
     101 => 'InvalidResourceError',
@@ -33,7 +33,7 @@ module TranscriberApi
 
   class Error < RuntimeError
     def self.from_raw(raw)
-      TranscriberApi.const_get(ERRORS.fetch(raw['code'].to_i)).new(raw)
+      TranscriberAPI.const_get(ERRORS.fetch(raw['code'].to_i)).new(raw)
     rescue KeyError
       raise ArgumentError, "Error code: #{raw['code'].inspect} is not defined"
     end

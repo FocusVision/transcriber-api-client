@@ -1,4 +1,4 @@
-module TranscriberApi
+module TranscriberAPI
   class Response
     def initialize(raw_response)
       @raw_response = raw_response

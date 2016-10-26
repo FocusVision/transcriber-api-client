@@ -1,14 +1,14 @@
 require 'spec_helper'
 
-RSpec.describe TranscriberApi::TranscriptRequest do
+RSpec.describe TranscriberAPI::TranscriptRequest do
   before :each do
-    TranscriberApi.configure do |config|
+    TranscriberAPI.configure do |config|
       config.api_key = '9566b75b-d9fa96fd-601f2df-0ef05ab63'
     end
   end
 
   it 'creates transcript requests via the API' do
-    response = TranscriberApi::TranscriptRequest.create(
+    response = TranscriberAPI::TranscriptRequest.create(
       audio_file_url: nil,
       expected_media_date: (Time.now + (60 * 60 * 24 * 1)).iso8601,
       high_accuracy: true,
@@ -22,26 +22,26 @@ RSpec.describe TranscriberApi::TranscriptRequest do
   end
 
   it 'gets transcript requests' do
-    response = TranscriberApi::TranscriptRequest.find(1)
+    response = TranscriberAPI::TranscriptRequest.find(1)
 
-    expect(response).to be_instance_of(TranscriberApi::TranscriptRequest)
+    expect(response).to be_instance_of(TranscriberAPI::TranscriptRequest)
     expect(response.id).to eq(1)
   end
 
   it 'handles 404 for resources' do
-    expect { TranscriberApi::TranscriptRequest.find(0) }.to(
-      raise_error(TranscriberApi::RecordNotFoundError)
+    expect { TranscriberAPI::TranscriptRequest.find(0) }.to(
+      raise_error(TranscriberAPI::RecordNotFoundError)
     )
   end
 
   it 'cancels transcript requests' do
-    response = TranscriberApi::TranscriptRequest.cancel(1)
+    response = TranscriberAPI::TranscriptRequest.cancel(1)
 
     expect(response.id).to eq(1)
   end
 
   it 'adds media for transcript requests' do
-    response = TranscriberApi::TranscriptRequest.add_media(
+    response = TranscriberAPI::TranscriptRequest.add_media(
       1,
       '/this-is-my-audio-file-url'
     )
@@ -51,13 +51,13 @@ RSpec.describe TranscriberApi::TranscriptRequest do
 
   it 'fails to add media if audio_file_url is missing' do
     expect {
-      TranscriberApi::TranscriptRequest.add_media(1, '')
-    }.to raise_error(TranscriberApi::ParamMissingError)
+      TranscriberAPI::TranscriptRequest.add_media(1, '')
+    }.to raise_error(TranscriberAPI::ParamMissingError)
   end
 
   it 'updates transcript requests' do
     one_week_from_today = (Time.now + (60 * 60 * 24 * 7)).iso8601
-    response = TranscriberApi::TranscriptRequest.update(
+    response = TranscriberAPI::TranscriptRequest.update(
       1,
       one_week_from_today
     )
