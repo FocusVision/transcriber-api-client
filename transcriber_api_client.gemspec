@@ -4,8 +4,8 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'transcriber_api/version'
 
 Gem::Specification.new do |spec|
-  spec.name = 'transcriber-api-client'
-  spec.version = TranscriberApi::VERSION
+  spec.name = 'transcriber_api'
+  spec.version = TranscriberAPI::VERSION
   spec.authors = ['Emanuele Tozzato']
   spec.email = ['etozzato@focusvision.com']
 

@@ -6,7 +6,7 @@ require 'transcriber_api/client'
 require 'transcriber_api/transcript_request'
 require 'transcriber_api/version'
 
-module TranscriberApi
+module TranscriberAPI
   BASE_URI = 'https://www.24tru.com/r/api'.freeze
 
   def self.configuration
