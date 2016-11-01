@@ -16,7 +16,7 @@ module TranscriberAPI
 
       handle_errors do
         HTTParty.post(
-          api_url_for('/transcript_requests'),
+          base_uri,
           body: serialize_resource(
             {
               audio_file_url: audio_file_url,
@@ -37,7 +37,7 @@ module TranscriberAPI
     def find(id)
       handle_errors do
         HTTParty.get(
-          api_url_for("/transcript_requests/#{id}"),
+          base_uri("/#{id}"),
           headers: get_headers
         )
       end
@@ -46,7 +46,7 @@ module TranscriberAPI
     def cancel(id)
       handle_errors do
         HTTParty.patch(
-          api_url_for("/transcript_requests/#{id}/cancel"),
+          base_uri("/#{id}/cancel"),
           headers: post_headers
         )
       end
@@ -55,7 +55,7 @@ module TranscriberAPI
     def add_media(id, audio_file_url:)
       handle_errors do
         HTTParty.patch(
-          api_url_for("/transcript_requests/#{id}/media"),
+          base_uri("/#{id}/media"),
           body: serialize_resource(audio_file_url: audio_file_url),
           headers: post_headers
         )
@@ -65,7 +65,7 @@ module TranscriberAPI
     def update(id, expected_media_date: nil)
       handle_errors do
         HTTParty.patch(
-          api_url_for("/transcript_requests/#{id}"),
+          base_uri("/#{id}"),
           body: serialize_resource(expected_media_date: expected_media_date),
           headers: post_headers
         )
@@ -74,15 +74,19 @@ module TranscriberAPI
 
     private
 
-    def api_url_for(endpoint)
-      TranscriberAPI.configuration.__base_uri__ + endpoint
+    def base_uri(path = nil)
+      "#{configuration.__base_uri__}/r/api/transcript_requests#{path}"
     end
 
     def get_headers
       {
         'Accept' => MIME_TYPE,
-        'Authorization' => "Bearer #{TranscriberAPI.configuration.api_key}"
+        'Authorization' => "Bearer #{configuration.api_key}"
       }
+    end
+
+    def configuration
+      TranscriberAPI.configuration
     end
 
     def post_headers
