@@ -31,7 +31,8 @@ module TranscriberAPI
               turnaround_time: turnaround_time
             }
           ),
-          headers: post_headers
+          headers: post_headers,
+          verify: configuration.__verify_ssl__
         )
       end
     end
@@ -40,7 +41,8 @@ module TranscriberAPI
       handle_errors do
         HTTParty.get(
           base_uri("/#{id}"),
-          headers: get_headers
+          headers: get_headers,
+          verify: configuration.__verify_ssl__
         )
       end
     end
@@ -49,7 +51,8 @@ module TranscriberAPI
       handle_errors do
         HTTParty.patch(
           base_uri("/#{id}/cancel"),
-          headers: post_headers
+          headers: post_headers,
+          verify: configuration.__verify_ssl__
         )
       end
     end
@@ -59,7 +62,8 @@ module TranscriberAPI
         HTTParty.patch(
           base_uri("/#{id}/media"),
           body: serialize_resource(audio_file_url: audio_file_url),
-          headers: post_headers
+          headers: post_headers,
+          verify: configuration.__verify_ssl__
         )
       end
     end
@@ -69,7 +73,8 @@ module TranscriberAPI
         HTTParty.patch(
           base_uri("/#{id}"),
           body: serialize_resource(expected_media_date: expected_media_date),
-          headers: post_headers
+          headers: post_headers,
+          verify: configuration.__verify_ssl__
         )
       end
     end
