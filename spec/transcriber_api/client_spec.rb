@@ -17,6 +17,7 @@ RSpec.describe TranscriberAPI::Client do
       expected_media_date: (Time.now + (60 * 60 * 24 * 1)).iso8601,
       high_accuracy: true,
       multiple_speakers: true,
+      name: '1',
       notification: 'webhook',
       notification_url: '/call_me_back',
       turnaround_time: 'normal'
