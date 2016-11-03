@@ -75,6 +75,7 @@ module TranscriberAPI
       :expected_media_date,
       :high_accuracy,
       :multiple_speakers,
+      :name,
       :notification,
       :notification_url,
       :notification_email,

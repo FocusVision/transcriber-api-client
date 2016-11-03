@@ -12,6 +12,7 @@ RSpec.describe TranscriberAPI::TranscriptRequest do
       audio_file_url: nil,
       expected_media_date: (Time.now + (60 * 60 * 24 * 1)).iso8601,
       high_accuracy: true,
+      name: '1',
       multiple_speakers: true,
       notification: 'webhook',
       notification_url: '/call_me_back',
