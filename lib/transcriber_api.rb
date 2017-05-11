@@ -8,7 +8,7 @@ require 'transcriber_api/transcript_request'
 require 'transcriber_api/version'
 
 module TranscriberAPI
-  BASE_URI = 'https://vi.focusvision.com'.freeze
+  BASE_URI = 'https://vi.focusvision.eu'.freeze
 
   def self.configuration
     @configuration ||= Configuration.new
